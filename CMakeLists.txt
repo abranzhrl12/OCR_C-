@@ -58,10 +58,35 @@ include_directories(
     ${OpenCV_INCLUDE_DIRS}
 )
 
+# Refuerzo para ONNX Runtime si find_package no propagó las cabeceras correctamente
+if(onnxruntime_FOUND)
+    # vcpkg suele poner las cabeceras en /installed/x64-windows-static/include/onnxruntime
+    # pero el código espera <onnxruntime_cxx_api.h>, así que añadimos la carpeta base
+    # y la subcarpeta si es necesario detectarla manualmente.
+    if(DEFINED VCPKG_INSTALLED_DIR)
+        include_directories("${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/onnxruntime")
+    endif()
+    
+    # Intento por propiedad de target
+    get_target_property(ONNX_INCLUDE_DIR onnxruntime::onnxruntime INTERFACE_INCLUDE_DIRECTORIES)
+    if(ONNX_INCLUDE_DIR)
+        include_directories(${ONNX_INCLUDE_DIR})
+        # Si la carpeta onnxruntime existe dentro de ese path, la añadimos también
+        if(EXISTS "${ONNX_INCLUDE_DIR}/onnxruntime")
+            include_directories("${ONNX_INCLUDE_DIR}/onnxruntime")
+        endif()
+    endif()
+endif()
+
+
+
 # Archivos fuente del motor OCR
 set(OCR_CORE_SOURCES
     src/infrastructure/adapters/OnnxOcrAdapter.cpp
+    src/infrastructure/utils/OcrImageProcessor.cpp
+    src/infrastructure/utils/PlatformUtils.cpp
 )
+
 
 # Librerías necesarias
 set(OCR_LIBS

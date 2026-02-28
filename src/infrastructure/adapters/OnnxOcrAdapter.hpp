@@ -28,16 +28,22 @@ public:
     explicit OnnxOcrAdapter(const OcrConfig& config);
     ~OnnxOcrAdapter() override = default;
 
-    std::vector<domain::TextBlock> detectAndRecognize(const std::string& imagePath) override;
-    std::vector<domain::TextBlock> detectAndRecognize(const unsigned char* buffer, size_t size) override;
+    std::vector<domain::TextBlock> processMat(const cv::Mat& src);
 
-private:
-    std::vector<domain::TextBlock> processMat(cv::Mat src);
     OcrConfig config_;
     static Ort::Env* env_;
     Ort::Session detSession_;
     Ort::Session recSession_;
     std::vector<std::string> dict_;
+
+    // Puerto (Dominio)
+    domain::Result<std::vector<domain::TextBlock>> detectAndRecognize(const std::string& imagePath) override;
+    domain::Result<std::vector<domain::TextBlock>> detectAndRecognize(const unsigned char* buffer, size_t size) override;
+    domain::Result<std::vector<domain::TextBlock>> detectAndRecognize(const cv::Mat& src) override;
+
+
+private:
+
 
     // Helpers
     void loadDictionary(const std::string& path);
@@ -45,16 +51,9 @@ private:
     std::vector<domain::BoundingBox> detect(const cv::Mat& src);
     std::string recognize(const cv::Mat& boxImg, float& confidence);
 
-    cv::Mat preprocessDet(const cv::Mat& src, float& ratio_h, float& ratio_w);
-    std::vector<domain::BoundingBox> postprocessDet(const cv::Mat& heatmap, const cv::Mat& src, float ratio_h, float ratio_w);
-
-    cv::Mat preprocessRec(const cv::Mat& boxImg);
     std::string ctcDecode(const std::vector<int64_t>& indices, float& confidence);
-
-    // Mejoras de imagen
-    cv::Mat enhanceCrop(const cv::Mat& crop) const;  // CLAHE + afilado
-    cv::Mat deskewCrop(const cv::Mat& crop) const;   // corrección inclinación
 };
+
 
 } // namespace ocr::infrastructure
 

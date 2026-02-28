@@ -38,14 +38,35 @@ OCR_API const char* ocr_process_buffer(void* handle,
                                        int size,
                                        int mode);
 
-// Procesar imagen y obtener JSON con coordenadas
+// Procesar imagen y obtener JSON con coordenadas agrupado por líneas (Layout)
 OCR_API const char* ocr_process_json(void* handle,
                                      const char* image_path);
 
-// Procesar buffer de imagen y obtener JSON
+// Procesar buffer y obtener JSON Layout
 OCR_API const char* ocr_process_buffer_json(void* handle,
                                             const unsigned char* buffer,
                                             int size);
+
+// Procesar imagen y obtener JSON crudo de bloques (Materia prima para Rust)
+OCR_API const char* ocr_process_raw(void* handle,
+                                    const char* image_path);
+
+// Procesar buffer y obtener JSON crudo
+OCR_API const char* ocr_process_buffer_raw(void* handle,
+                                           const unsigned char* buffer,
+                                           int size);
+
+// Procesar píxeles crudos (Alto rendimiento para Rust)
+// pixels: puntero a los bytes (BGR/RGB)
+// width, height: dimensiones
+// channels: usualmente 3 (BGR)
+OCR_API const char* ocr_process_pixels_raw(void* handle,
+                                           const unsigned char* pixels,
+                                           int width,
+                                           int height,
+                                           int channels);
+
+
 
 // Liberar string retornado por ocr_process o ocr_process_json
 OCR_API void ocr_free_string(const char* str);
