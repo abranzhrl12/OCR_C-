@@ -1,0 +1,81 @@
+# Build directories
+build/
+linux_output/
+out/
+bin/
+lib/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+install/
+CTestTestfile.cmake
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Debug symbols
+*.pdb
+*.ilk
+
+# Logs and temporary files
+*.log
+build_*.txt
+*.txt
+!CMakeLists.txt
+!README.md
+err.log
+out.log
+
+# Project specific temporary files
+last_extraction_*.txt
+temp_output.txt
+resultado_ajustado.txt
+syms.txt
+
+# Artifacts/Data
+*.pdf
+*.tgz
+models2/
+rust_integration/deps/
+rust_integration/models/
+test_image/
+
+# IDEs
+.vscode/
+.vs/
+*.swp
+*.swo
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db

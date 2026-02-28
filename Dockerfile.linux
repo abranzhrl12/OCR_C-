@@ -1,0 +1,37 @@
+# Usar Debian Bookworm (Igual que el backend de Rust)
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    wget \
+    pkg-config \
+    libopencv-dev \
+    nlohmann-json3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Obtener ONNX Runtime
+WORKDIR /opt
+RUN wget -q https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-linux-x64-1.16.3.tgz && \
+    tar -xzf onnxruntime-linux-x64-1.16.3.tgz && \
+    mv onnxruntime-linux-x64-1.16.3 onnxruntime && \
+    rm onnxruntime-linux-x64-1.16.3.tgz
+
+WORKDIR /app
+COPY . .
+
+# Compilar OcrLib
+RUN mkdir -p build && cd build && \
+    cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -Donnxruntime_DIR=/opt/onnxruntime \
+    -DBUILD_SHARED_LIBS=OFF && \
+    make OcrLib -j$(nproc)
+
+# Exportar resultados
+CMD ["sh", "-c", "cp /app/build/libOcrLib.a /output/libOcrLib.a && \
+    cp /opt/onnxruntime/lib/libonnxruntime.so* /output/ && \
+    echo 'Librerías exportadas correctamente a /output/'"]

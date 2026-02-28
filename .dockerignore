@@ -1,0 +1,12 @@
+build/
+rust_integration/
+linux_output/
+models/
+models2/
+test_image/
+.git/
+.vcpkg/
+last_extraction_*.txt
+*.ps1
+*.json
+*.log
